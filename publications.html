@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Publications - Vijay Chandru</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <base target="">
+    <style>
+        /* ── Category section ── */
+        .pubs-category {
+            margin-bottom: 4rem;
+        }
+
+        .pubs-category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1.8rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .pubs-category-header i {
+            font-size: 0.95rem;
+            color: var(--accent);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(14, 109, 154, 0.1);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .pubs-category-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.4px;
+        }
+
+        .pubs-category-header .pub-count {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: var(--bg-card);
+            padding: 0.2rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-subtle);
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        /* ── 3-column grids ── */
+        .pubs-list,
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.1rem;
+            margin-bottom: 2rem;
+            align-items: start;   /* rows align to top — no unequal stretching */
+        }
+
+        /* ── Shared card base ── */
+        .pub-item,
+        .book-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 1.4rem 1.5rem 1.3rem;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.35s ease,
+                        border-color 0.35s ease,
+                        background 0.35s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        /* accent top bar on hover */
+        .pub-item::before,
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .pub-item:hover::before,
+        .book-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .pub-item:hover,
+        .book-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+            border-color: var(--border-accent);
+            background: var(--bg-card-hover);
+        }
+
+        /* ── Publication card internals ── */
+        .pub-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(14, 109, 154, 0.08);
+            border-radius: 6px;
+            padding: 0.2rem 0.55rem;
+            margin-bottom: 0.85rem;
+            align-self: flex-start;
+        }
+
+        .pub-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.65rem;
+            line-height: 1.45;
+        }
+
+        .pub-authors {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 0.45rem;
+            /* clamp long author lists to 3 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .pub-venue {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            font-style: italic;
+            margin-bottom: 0;
+            flex-grow: 1;
+        }
+
+        .pub-separator {
+            width: 100%;
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 0.9rem 0 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .pub-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .pub-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.72rem;
+            transition: gap 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            opacity: 0.85;
+        }
+
+        .pub-link-btn:hover {
+            gap: 0.55rem;
+            color: var(--accent-light);
+            opacity: 1;
+        }
+
+        .pub-link-btn i {
+            font-size: 0.62rem;
+        }
+
+        /* ── Book card internals ── */
+        .book-category {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(14, 109, 154, 0.08);
+            border-radius: 6px;
+            padding: 0.2rem 0.55rem;
+            margin-bottom: 0.85rem;
+            align-self: flex-start;
+            display: inline-block;
+        }
+
+        .book-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.6rem;
+            line-height: 1.45;
+        }
+
+        .book-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+
+        .book-card .pub-separator {
+            width: 100%;
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 0.9rem 0 0.85rem;
+        }
+
+        .book-card .pub-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.72rem;
+            transition: gap 0.25s ease, color 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-top: auto;
+            opacity: 0.85;
+        }
+
+        .book-card .pub-link:hover {
+            gap: 0.55rem;
+            color: var(--accent-light);
+            opacity: 1;
+        }
+
+        /* ── Responsive breakpoints ── */
+        @media (max-width: 1100px) {
+            .pubs-list,
+            .books-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .pubs-list,
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pub-item,
+            .book-card {
+                padding: 1.1rem 1.2rem;
+            }
+
+            .pub-title,
+            .book-card h3 {
+                font-size: 0.88rem;
+            }
+
+            .pub-authors {
+                -webkit-line-clamp: unset;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="page-container publications-page">
+        <nav class="top-nav">
+            <a href="index.html" class="logo">Vijay Chandru</a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="personal.html">Personal</a>
+                <a href="transformational.html">Transformational</a>
+                <a href="publications.html" class="active">Publications</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </nav>
+
+        <header class="publications-header animate-in">
+            <h1>Publications <span class="accent">&amp; Research</span></h1>
+            <div class="header-line"></div>
+            <p>Over 120 peer-reviewed publications spanning computational biology, health systems, optimization, computational geometry, and digital humanities.</p>
+        </header>
+
+        <main class="publications-content">
+            <!-- BOOKS & EDITED VOLUMES -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-book"></i>
+                    <h2>Books &amp; Edited Volumes</h2>
+                    <span class="pub-count">8 items</span>
+                </div>
+                <div class="books-grid">
+                    <article class="book-card animate-in delay-1">
+                        <span class="book-category">Edited Volume</span>
+                        <h3>Special Issue on Digital Health</h3>
+                        <p>Journal of Indian Institute of Science, Volume 100-4, October 2020. Guest edited by Vijay Chandru. A comprehensive exploration of the digital transformation in healthcare delivery and medical informatics.</p>
+                        <div class="pub-separator"></div>
+                        <a href="https://link.springer.com/journal/41745/volumes-and-issues/100-4" class="pub-link" target="_blank" rel="noopener">View Issue <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-2">
+                        <span class="book-category">Edited Volume</span>
+                        <h3>Digital Hampi: Preserving Indian Cultural Heritage</h3>
+                        <p>Springer (2018). Edited by Anupama Mallik, Santanu Chaudhury, Vijay Chandru and Sharada Srinivasan. An exploration of multidisciplinary approaches to digital preservation and virtual reconstruction of the Hampi world heritage site.</p>
+                        <div class="pub-separator"></div>
+                        <a href="https://link.springer.com/book/10.1007/978-981-10-5738-0" class="pub-link" target="_blank" rel="noopener">View Book <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-3">
+                        <span class="book-category">Book</span>
+                        <h3>Optimization Methods for Logical Inference</h3>
+                        <p>Wiley Interscience (1999). Co-authored with John Hooker of Carnegie Mellon University. A foundational text bridging mathematical optimization and computational logic for advanced reasoning systems.</p>
+                        <div class="pub-separator"></div>
+                        <a href="https://www.wiley.com/en-gb/Optimization+Methods+for+Logical+Inference-p-x000026317" class="pub-link" target="_blank" rel="noopener">View Book <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-1">
+                        <span class="book-category">Edited Volume</span>
+                        <h3>Proceedings of the 16th FSTTCS</h3>
+                        <p>Springer-Verlag (1996). Edited by V. Chandru and V. Vinay. Lecture Notes in Computer Science, Volume 1180. Covering the foundations of software technology and theoretical computer science.</p>
+                        <div class="pub-separator"></div>
+                        <a href="https://link.springer.com/book/10.1007/3-540-62034-6" class="pub-link" target="_blank" rel="noopener">View Proceedings <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-2">
+                        <span class="book-category">Special Issue</span>
+                        <h3>Special Issue on Computational Mathematics</h3>
+                        <p>Journal of the Indian Institute of Science, May 1998. Edited by V.S. Borkar, V. Chandru and S. Sathiya Keerthi. Curated research focusing on numerical analysis, algorithmic complexity, and optimization methods.</p>
+                        <div class="pub-separator"></div>
+                        <a href="#" class="pub-link">View Issue <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-3">
+                        <span class="book-category">Special Issue</span>
+                        <h3>Special Issue on Systems Theory and Optimization</h3>
+                        <p>Sadhana, October 1997. Edited by V.S. Borkar, V. Chandru and M.K. Ghosh. Investigating the theoretical frameworks of systems engineering and their optimization in complex environments.</p>
+                        <div class="pub-separator"></div>
+                        <a href="#" class="pub-link">View Issue <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-1">
+                        <span class="book-category">Special Issue</span>
+                        <h3>Special Issue on Optimization-1</h3>
+                        <p>Journal of the Indian Institute of Science, Volume 75, Number 1, Jan-Feb 1995. Edited by V.S. Borkar, V. Chandru and M.K. Ghosh. Part one exploring linear and non-linear optimization techniques.</p>
+                        <div class="pub-separator"></div>
+                        <a href="#" class="pub-link">View Issue <i class="fas fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="book-card animate-in delay-2">
+                        <span class="book-category">Special Issue</span>
+                        <h3>Special Issue on Optimization-2</h3>
+                        <p>Journal of the Indian Institute of Science, Volume 75, Number 2, Mar-April 1995. Edited by V.S. Borkar, V. Chandru and M.K. Ghosh. Continuing the deep dive into advanced optimization algorithms and their industrial applications.</p>
+                        <div class="pub-separator"></div>
+                        <a href="#" class="pub-link">View Issue <i class="fas fa-arrow-right"></i></a>
+                    </article>
+                </div>
+            </div>
+
+            <!-- HEALTH SYSTEMS & POLICY -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-heartbeat"></i>
+                    <h2>Health Systems &amp; Policy</h2>
+                    <span class="pub-count">37 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">1</span>
+                        <h3 class="pub-title">The Lancet Commission on a citizen-centred health system for India</h3>
+                        <p class="pub-authors">Vikram Patel, Anuska Kalita, Kheya Melo Furtado, Nachiket Mor, Shubhangi Bhadada, Sandra Albert, Hasna Ashraf, Satchit Balsari, Indu Bhushan, Vijay Chandru, Mirai Chatterjee, Sarika Chaturvedi, Raghu Dharmaraju, Atul Gupta, Kiran Mazumdar-Shaw, Gautam I Menon, Arnab Mukherji, Poonam Muttreja, Anjali Nambiar, Thelma Narayan, Bhushan Patwardhan, Tejasvi Ravi, Sharad Sharma, Devi Shetty, Sudheer Kumar Shukla, S V Subramanian, Leila Varkey, Sandhya Venkateswaran, Siddhesh Zadey, Tarun Khanna</p>
+                        <p class="pub-venue"><em>The Lancet</em>, 2026; 407, 388-468</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/S0140-6736(25)02169-5" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)02169-5/fulltext" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">2</span>
+                        <h3 class="pub-title">From disruption to delivery: Bridging the gap in the future of CRISPR medicine in India</h3>
+                        <p class="pub-authors">Vaijayanti Gupta, Vijay Chandru, Arvind Venkatesan, Vandana Hegde, Rety Arora</p>
+                        <p class="pub-venue">Opinion Piece, <em>Chemistry World</em>, 27 February 2026</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://www.chemistryworld.com/opinion/bridging-the-gap-in-the-future-of-crispr-medicine-in-india/4022897.article" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Article</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">3</span>
+                        <h3 class="pub-title">MIDAS: a technology-enabled hub-and-spoke system for the collection and dissemination of high-quality medical datasets in India</h3>
+                        <p class="pub-authors">D Maity, R Satish, R Dharmaraju, V Chandru, R Sundaresan, H Singh and D Pal</p>
+                        <p class="pub-venue"><em>BMC Medical Informatics and Decision Making</em> (2025) 25:252</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1186/s12911-025-03092-7" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://bmcmedinformdecismak.biomedcentral.com/articles/10.1186/s12911-025-03092-7" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">4</span>
+                        <h3 class="pub-title">Intent to Cure: The Need for a Rare Disease Platform in India and across the Global South</h3>
+                        <p class="pub-authors">V Chandru, V Gupta, V Hegde, A Venkatesan, R Arora</p>
+                        <p class="pub-venue"><em>The CRISPR Journal</em> (invited paper for the 3rd Global Observatory on Genome Editing, AAAS Cambridge MA), May 2025</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1089/crispr.2025.0046" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.liebertpub.com/doi/10.1089/crispr.2025.0046" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">5</span>
+                        <h3 class="pub-title">CancerSpot: A multi-cancer early detection test developed and validated on a retrospective cohort</h3>
+                        <p class="pub-authors">Swaraj Basu, et al.</p>
+                        <p class="pub-venue"><em>MedRxiv</em> preprint, posted December 5, 2024</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1101/2024.12.03.24318395" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.medrxiv.org/content/10.1101/2024.12.03.24318395" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Preprint</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">6</span>
+                        <h3 class="pub-title">MIDAS: a new platform for quality-graded health data for AI-enabled healthcare in India</h3>
+                        <p class="pub-authors">Maity, D., Satish, R., Jadeja, D.A. et al.</p>
+                        <p class="pub-venue"><em>Nature Medicine</em> (2024)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1038/s41591-024-03198-x" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.nature.com/articles/s41591-024-03198-x" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">7</span>
+                        <h3 class="pub-title">PathCrisp: An Innovative Molecular Diagnostic Tool for Early Detection of NDM-Resistant Infections</h3>
+                        <p class="pub-authors">Reety Arora, Shrigouri Patil, Kruthika B. S., Annes Siji, Mandar Naik, Vandana Hegde, Dhrithi Mallur, Vaijayanti Gupta, Bulagonda Eswarappa Pradeep, Nazneen Gheewalla, Shraddha Karve, Maithili Kavathekar, Bansidhar Tarai, Vijay Chandru, Jayaprada Rangineni</p>
+                        <p class="pub-venue"><em>Scientific Reports</em> 15, 490 (2025)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1038/s41598-024-84832-z" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.nature.com/articles/s41598-024-84832-z" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">8</span>
+                        <h3 class="pub-title">Genomic Surveillance of SARS-CoV-2 in Bangalore, India 2021-22</h3>
+                        <p class="pub-authors">Pulleri Kandi Harsha, Chitra Pattabiraman, Anson Kunjumon George, Madhusudhan J, Saumitra Mardikar, Mudasir Nazaa, Srivathsan Adimoolam, Divya Priya A, Jayee Pitale, Mahesh Nagarajan, Srikant Sridharan, Yasodha Sivasamy, Anand Janakiraman, Vamsi Veeramachaneni, Ramesh Hariharan, Vishal US Rao, Thrilok Chandra, Sudhakar K, Randeep Dev, Ashwath Narayan CN, Vasanthapuram Ravi, Vijay Chandru</p>
+                        <p class="pub-venue"><em>Journal of Biotechnology and Biomedicine</em>. 7 (2024): 232-240</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">9</span>
+                        <h3 class="pub-title">OmiCrisp: A CRISPR SARS-CoV-2 Test with Omicron Detection</h3>
+                        <p class="pub-authors">Suruchi Sharma, Manasa Bagur Prakash, Reety Arora, Annes Siji, Bidipta Roy, Varsha Shridhar, Nimisha Gupta, Vijay Chandru, Vaijayanti Gupta</p>
+                        <p class="pub-venue"><em>Journal of Biotechnology and Biomedicine</em>. 7 (2024): 41-55</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">10</span>
+                        <h3 class="pub-title">Coupled models of genomic surveillance and evolving pandemics with applications for timely public health interventions</h3>
+                        <p class="pub-authors">Espinoza B, Adiga A, Venkatramanan S, Warren AS, Chen J, Lewis BL, Vullikanti A, Swarup S, Moon S, Barrett CL, Athreya S, Sundaresan R, Chandru V, Laxminarayan R, Schaffer B, Poor HV, Levin SA, Marathe MV</p>
+                        <p class="pub-venue"><em>Proceedings of the National Academy of Sciences (PNAS)</em>. 2023 Nov 28;120(48):e2305227120</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1073/pnas.2305227120" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.pnas.org/doi/10.1073/pnas.2305227120" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">11</span>
+                        <h3 class="pub-title">COVID-19 and Recombinant Innovation in Indian Science</h3>
+                        <p class="pub-authors">Vijay Chandru and Chitra Pattabhiraman</p>
+                        <p class="pub-venue">Chapter 2.4 in <em>Flattening The Curve: Covid-19 &amp; Grand Challenges For Global Health, Innovation, And Economy</em>, World Scientific Press, April 2023</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1142/9789811262739_0010" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">12</span>
+                        <h3 class="pub-title">Catalyzing healthcare accessibility through cashless payment gateways in India: a digital revolution</h3>
+                        <p class="pub-authors">Barsha Gadapani Pathak, Georgie Mathew, Vijay Chandru, Mohan Shashikant Kamath</p>
+                        <p class="pub-venue"><em>The Lancet Regional Health - Southeast Asia</em>, 2023, 100288</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/j.lansea.2023.100288" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.thelancet.com/journals/lansea/article/PIIS2772-3682(23)00148-8/fulltext" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">13</span>
+                        <h3 class="pub-title">Reimagining India's Health System: Technology Levers for Universal Health Care</h3>
+                        <p class="pub-authors">Chandru V, Sharma S, Dharmaraju R</p>
+                        <p class="pub-venue"><em>Journal of the Indian Institute of Science</em>. 2022;102(2):743-752</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/s41745-022-00326-9" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://link.springer.com/article/10.1007/s41745-022-00326-9" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">14</span>
+                        <h3 class="pub-title">Consensus guidelines on management of oral potentially malignant disorders</h3>
+                        <p class="pub-authors">Birur PN, Patrick S, Warnakulasuriya S, Gurushanth K, Raghavan SA, Rath GK, Chaturvedi P, Chandru V, Mathew B, Prabhash K, Gurudath S, Mukhia N, Sunny SP, Mehrotra R, Vivek V, Patil S, Kumar GS, Fasalkar S, Pratima R, Kuriakose MA</p>
+                        <p class="pub-venue"><em>Indian Journal of Cancer</em>. 2022 Jul-Sep;59(3):442-453</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.4103/ijc.IJC_128_21" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">15</span>
+                        <h3 class="pub-title">OMICRON SUB-LINEAGE BA.2: We need to optimise genome surveillance and tracing of SARS-CoV-2 variants</h3>
+                        <p class="pub-authors">Vishal Rao US, Gururaj Arakeri, Ujjwal Rao, Vijay Chandru, and Rui Amaral Mendes</p>
+                        <p class="pub-venue"><em>BMJ</em> 2022;376:o601</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1136/bmj.o601" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.bmj.com/content/376/bmj.o601" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">16</span>
+                        <h3 class="pub-title">A Moonshot for Citizen-Centred Universal Health Care</h3>
+                        <p class="pub-authors">Vijay Chandru, Raghu Dharmaraju, Umakant Soni</p>
+                        <p class="pub-venue">Book chapter in <em>"Our world in 2047: future trends from the finest minds"</em> edited by Kaveree Bamzai, IIM Kozhikode Press, 2022</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">17</span>
+                        <h3 class="pub-title">India's resurgence of COVID-19: urgent actions needed</h3>
+                        <p class="pub-authors">Yamini Aiyar, Vijay Chandru, Mirai Chatterjee, Sapna Desai, Armida Fernandez, Atul Gupta, Gagandeep Kang, Tarun Khanna, Kiran Mazumdar-Shaw, Nachiket Mor, Arnab Mukherji, Poonam Muttreja, Thelma Narayan, Bhushan Patwardhan, K Sujatha Rao, Sharad Sharma, Devi Shetty, S V Subramanian, Leila E Caleb Varkey, Sandhya Venkateswaran, Vikram Patel</p>
+                        <p class="pub-venue"><em>The Lancet</em>, Volume 397, Issue 10291, 2021, Pages 2232-2234</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/S0140-6736(21)01202-2" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(21)01202-2/fulltext" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">18</span>
+                        <h3 class="pub-title">From Digital Technologies to Living Machines</h3>
+                        <p class="pub-authors">Chandru, V.</p>
+                        <p class="pub-venue">(Editorial) <em>Current Science</em>, Vol. 119, No. 12, 25 December 2020</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://www.currentscience.ac.in/Volumes/119/12/1869.pdf" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> PDF</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">19</span>
+                        <h3 class="pub-title">Validation of whole genome sequencing from dried blood spots</h3>
+                        <p class="pub-authors">Agrawal, P., Katragadda, S., Hariharan, A.K. et al.</p>
+                        <p class="pub-venue"><em>BMC Medical Genomics</em> 14, 110 (2021)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1186/s12920-021-00951-w" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://bmcmedgenomics.biomedcentral.com/articles/10.1186/s12920-021-00951-w" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">20</span>
+                        <h3 class="pub-title">Targeted Sequencing Detects Variants That May Contribute to the Risk of Neuropsychiatric Disorders</h3>
+                        <p class="pub-authors">Mahadevan J, Sud R, Nadella RK, et al.</p>
+                        <p class="pub-venue"><em>Indian Journal of Psychological Medicine</em>. March 2021</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1177/0253717621993672" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                         <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">21</span>
+                        <h3 class="pub-title">Exponential Technologies and the Perfect Storm for Digital Health</h3>
+                        <p class="pub-authors">Chandru, V.</p>
+                        <p class="pub-venue"><em>Journal of the Indian Institute of Science</em> (2020)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/s41745-020-00203-3" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://link.springer.com/article/10.1007/s41745-020-00203-3" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">22</span>
+                        <h3 class="pub-title">Misaligned Stakeholders and Health Systems Underperformance</h3>
+                        <p class="pub-authors">World Economic Forum's Industry Agenda Council: The Future of the Health Sector</p>
+                        <p class="pub-venue">White Paper, June 2016</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://www.weforum.org/stories/2016/06/3-ways-to-fix-global-health/" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> WEF</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">23</span>
+                        <h3 class="pub-title">Report of the Expert Committee on Innovation and Entrepreneurship</h3>
+                        <p class="pub-authors">Atal Innovation Mission</p>
+                        <p class="pub-venue">NITI Aayog, New Delhi, August 2015</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="http://www.niti.gov.in/writereaddata/files/new_initiatives/report-of-the-expert-committee.pdf" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> PDF</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">24</span>
+                        <h3 class="pub-title">Revamping India's Scientific Ecosystem</h3>
+                        <p class="pub-authors">Chandru, V.</p>
+                        <p class="pub-venue"><em>The Hindu</em>, August 3rd 2015</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="http://www.thehindu.com/opinion/lead/revamping-indias-scientific-ecosystem/article7492142.ece" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Article</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">25</span>
+                        <h3 class="pub-title">Vision 2020: Leadership in Affordable Therapeutic Products: A Bio-Pharma Strategy for India</h3>
+                        <p class="pub-authors">V. Chandru and Sujay Shetty</p>
+                        <p class="pub-venue">ABLE-PwC Report for Department of Pharmaceuticals, July 2010</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">26</span>
+                        <h3 class="pub-title">Organization for rare diseases India (ORDI) — addressing the challenges and opportunities for the Indian rare diseases' community</h3>
+                        <p class="pub-authors">Rajasimha et al.</p>
+                        <p class="pub-venue"><em>Genetics Research</em>, vol. 96, e009. Cambridge University Press 2014</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1017/S0016672314000098" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">27</span>
+                        <h3 class="pub-title">Decision Analytics: The Challenge of Leveraging the Transduction of Processes</h3>
+                        <p class="pub-authors">V. Chandru, N. Gupta, R. Hariharan, A. Janakiraman, R. Prabhakar, and V. Veeramachaneni</p>
+                        <p class="pub-venue"><em>Proceedings 1st IIMA International Conference on Advanced Data Analysis, Business Analytics and Intelligence</em>, June 2009</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">28</span>
+                        <h3 class="pub-title">India's Strength in Bioinformatics</h3>
+                        <p class="pub-authors">V. Chandru</p>
+                        <p class="pub-venue"><em>Biotech News</em>, June 2009</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">29</span>
+                        <h3 class="pub-title">The Simputer Meme and Sustainable Development</h3>
+                        <p class="pub-authors">V. Chandru</p>
+                        <p class="pub-venue"><em>Proceedings of the CCC Workshop on Computer Science and Global Development</em>, Berkeley, CA pages 25-26 (2009)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">30</span>
+                        <h3 class="pub-title">Life Science Informatics: India as an emerging player</h3>
+                        <p class="pub-authors">V. Chandru</p>
+                        <p class="pub-venue"><em>Biospectrum</em>, June 2008</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">31</span>
+                        <h3 class="pub-title">The Simputer: Technology with Heart</h3>
+                        <p class="pub-authors">V Chandru</p>
+                        <p class="pub-venue"><em>Proceedings of the Discussion Meeting on the occasion of the 75th birthday celebrations of Professor AKN Reddy</em> (2005)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">32</span>
+                        <h3 class="pub-title">The Global Village: Aspirations and Opportunities for Developing Economies</h3>
+                        <p class="pub-authors">Chandru, V and S Manohar</p>
+                        <p class="pub-venue"><em>NIAS Report</em>, October 1998</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">33</span>
+                        <h3 class="pub-title">Commercial Academics: an Indian Story</h3>
+                        <p class="pub-authors">V. Chandrasekar and V Chandru</p>
+                        <p class="pub-venue"><em>Management Review, IIMB</em>, Vol. 14, No.1, March 2002</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">34</span>
+                        <h3 class="pub-title">A White Paper on Bioinformatics in India</h3>
+                        <p class="pub-authors">V.Chandru and P.Hari</p>
+                        <p class="pub-venue">Report Commissioned by Secretary, Ministry of Communication and Information Technology, January 2002 (published as a 2-part series in <em>BusinessWorld India</em>)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">35</span>
+                        <h3 class="pub-title">Radical Simplicity for Universal Access</h3>
+                        <p class="pub-authors">V. Chandru, V.L. Deshpande, S. Garg, R. Hariharan, S. Manohar, M. Mathias, V. Vinay (The Simputer Trust)</p>
+                        <p class="pub-venue"><em>dyd01 Development by Design, MIT Media Lab</em>, July 2001</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">36</span>
+                        <h3 class="pub-title">THE ICF, INC. Coal And Electric Utilities: An Analysis and Evaluation Model</h3>
+                        <p class="pub-authors">David O. Wood, Neil L. Goldman, Vijaya Chandru, James Gruhl, Michael Manove, Martha Mason Jai Oum, Fred Schweppe, and Ingo Vogelsang</p>
+                        <p class="pub-venue">M.I.T. Energy Laboratory Report No. MIT-EL 31-015, Volume I: Final Report, March 1980 (Revised October 1981)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">37</span>
+                        <h3 class="pub-title">Health Heatmap of India: An Open Data Platform</h3>
+                        <p class="pub-authors">Dinesh, A.S., Mathur, V., Ansil, B.R. et al.</p>
+                        <p class="pub-venue"><em>Journal of the Indian Institute of Science</em> (2020)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/s41745-020-00196-z" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://link.springer.com/article/10.1007/s41745-020-00196-z" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPUTATIONAL BIOLOGY -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-dna"></i>
+                    <h2>Computational Biology</h2>
+                    <span class="pub-count">7 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">38</span>
+                        <h3 class="pub-title">Multi‑gene testing in neurological disorders showed an improved diagnostic yield: data from over 1000 Indian patients</h3>
+                        <p class="pub-authors">Aparna Ganapathy et al.</p>
+                        <p class="pub-venue"><em>Journal of Neurology</em>, May 2019</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/s00415-019-09350-5" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">39</span>
+                        <h3 class="pub-title">A non-parametric model for prediction of dengue incidence</h3>
+                        <p class="pub-authors">Atlanta Chakraborty and Vijay Chandru</p>
+                        <p class="pub-venue"><em>IISc Journal</em> Vol 100-4, October 2020</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">40</span>
+                        <h3 class="pub-title">Folding Proteins on Lattices: An Integer Programming Approach</h3>
+                        <p class="pub-authors">V. Chandru, M.R. Rao, and Ganesh Swaminathan</p>
+                        <p class="pub-venue"><em>The Sharpest Cut: Festschrift für Manfred Padberg</em>, Springer Verlag, 2004</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-3-642-59309-9_8" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">41</span>
+                        <h3 class="pub-title">A sense of life: computational and experimental investigations with models of biochemical and evolutionary processes</h3>
+                        <p class="pub-authors">B. Mishra, V. Chandru, C. Cantor, R. Hariharan, et al. (27 authors)</p>
+                        <p class="pub-venue"><em>OMICS: A Journal of Integrative Biology</em>, Volume 7, Number 3, 2003</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1089/153623103322452839" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">42</span>
+                        <h3 class="pub-title">The algorithmics of folding proteins on lattices</h3>
+                        <p class="pub-authors">Vijay Chandru, Abhi Dattasharma, V. S. Anil Kumar</p>
+                        <p class="pub-venue"><em>Discrete Applied Mathematics</em> 127(1): 145-161 (2003)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/S0166-218X(02)00439-8" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">43</span>
+                        <h3 class="pub-title">A White Paper on Bioinformatics in India</h3>
+                        <p class="pub-authors">V.Chandru and P.Hari</p>
+                        <p class="pub-venue">Published in two parts in <em>BusinessWorld</em>, March-April 2002</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">44</span>
+                        <h3 class="pub-title">Molecular Dynamics Visualization with XML and VRML</h3>
+                        <p class="pub-authors">B. Arun, V. Chandru, A. D. Ganguly, Swami Manohar</p>
+                        <p class="pub-venue"><em>Computer Graphics International 2000</em>: 335-342</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1109/CGI.2000.852340" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALYTICS & OPTIMIZATION -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h2>Analytics &amp; Optimization</h2>
+                    <span class="pub-count">31 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">45</span>
+                        <h3 class="pub-title">A linear programming primer: From Fourier to Karmarkar</h3>
+                        <p class="pub-authors">Chakraborty, A., Chandru, V. &amp; Rao, M.R.</p>
+                        <p class="pub-venue"><em>Annals of Operations Research</em>, pp.1-24, March 2019</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/s10479-019-03186-2" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://link.springer.com/article/10.1007/s10479-019-03186-2" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">46</span>
+                        <h3 class="pub-title">Heuristic Algorithms for Scheduling Heat-Treatment Furnace of Steel Casting Industries</h3>
+                        <p class="pub-authors">M Mathirajan, V Chandru and A.I. Sivakumar</p>
+                        <p class="pub-venue"><em>SADHANA</em>, Vol. 32, Part 5, 1-22 (2007)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/s12046-007-0036-0" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">47</span>
+                        <h3 class="pub-title">Decision Analytics: The challenge of leveraging the transduction of Processes</h3>
+                        <p class="pub-authors">V. Chandru</p>
+                        <p class="pub-venue">M.N. Gopalan Endowment Lecture, 21st <em>Ramanujam Mathematical Society Annual Lecture</em>, 2006</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">48</span>
+                        <h3 class="pub-title">Scheduling algorithms for heterogeneous batch processors with incompatible job-families</h3>
+                        <p class="pub-authors">M Mathirajan, A.I. Sivakumar and V. Chandru</p>
+                        <p class="pub-venue"><em>Journal of Intelligent Manufacturing</em>, 15, 787-803 (2004)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1023/B:JIMS.0000042660.98536.2c" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">49</span>
+                        <h3 class="pub-title">Supply Demand Matching in Resource Constrained Electricity Systems</h3>
+                        <p class="pub-authors">P. Balachandra and V. Chandru</p>
+                        <p class="pub-venue"><em>Energy Conversion and Management</em>, 44 (2003) 411-437</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/S0196-8904(02)00087-5" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">50</span>
+                        <h3 class="pub-title">Modelling electricity demand with representative load curves</h3>
+                        <p class="pub-authors">P. Balachandra and V. Chandru</p>
+                        <p class="pub-venue"><em>Energy</em> 24(3): 219-230 (1999)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/S0360-5442(98)00096-6" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">51</span>
+                        <h3 class="pub-title">Non-supply of electricity in resource constrained electricity systems</h3>
+                        <p class="pub-authors">P. Balachandra and V. Chandru</p>
+                        <p class="pub-venue"><em>International Journal of Global Energy Issues</em> 17(1/2): 154-169 (2002)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1504/IJGEI.2002.000938" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">52</span>
+                        <h3 class="pub-title">Electricity demand analysis - unconstrained vs constrained scenarios</h3>
+                        <p class="pub-authors">P. Balachandra, V. Chandru and M.H. Bala Subrahmanya</p>
+                        <p class="pub-venue"><em>International Journal of Global Energy Issues</em> 20(1): 1-35 (2003)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1504/IJGEI.2003.004041" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">53</span>
+                        <h3 class="pub-title">Qualitative Theorem Proving in Linear Constraints</h3>
+                        <p class="pub-authors">Vijay Chandru, Jean-Louis Lassez</p>
+                        <p class="pub-venue"><em>Verification: Theory and Practice 2003</em>: 395-406</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-3-540-39910-0_18" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">54</span>
+                        <h3 class="pub-title">Modified Heuristic Algorithms for Scheduling Multiple Batch Processors with Incompatible Job Families</h3>
+                        <p class="pub-authors">M.Mathirajan, Vijay Chandru, and K.N.Krishnaswamy</p>
+                        <p class="pub-venue"><em>Asia-Pacific Journal of Operational Research</em>, 18(1), 89-102 (2001)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">55</span>
+                        <h3 class="pub-title">Optimization Methods for Logical Inference</h3>
+                        <p class="pub-authors">V.Chandru and J.N.Hooker</p>
+                        <p class="pub-venue">Wiley Interscience Series in Discrete Mathematics and Optimization, March 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://www.wiley.com/en-gb/Optimization+Methods+for+Logical+Inference-p-x000026317" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Wiley</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">56</span>
+                        <h3 class="pub-title">175 years of Linear Programming, Part I: The French Connection</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>Resonance: The Journal of Science Education</em>, Indian Academy of Sciences, October 1998</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02837327" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">57</span>
+                        <h3 class="pub-title">175 years of Linear Programming, Part II: Pivots in Column Space</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>Resonance: The Journal of Science Education</em>, January 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02838061" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">58</span>
+                        <h3 class="pub-title">175 years of Linear Programming, Part III: Pune's Gift</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>Resonance: The Journal of Science Education</em>, May 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02839260" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">59</span>
+                        <h3 class="pub-title">175 years of Linear Programming, Part IV: Minimax and Cake</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>Resonance: The Journal of Science Education</em>, July 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02840363" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">60</span>
+                        <h3 class="pub-title">175 years of Linear Programming, Part V: Max Flow - Min Cut</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>Resonance: The Journal of Science Education</em>, October 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02840364" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">61</span>
+                        <h3 class="pub-title">Linear Programming</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue">Chapter 31 in <em>Handbook of Algorithms and Theory of Computing</em>, edited by M.J. Atallah, CRC Press 1999, 31-1 to 31-37</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">62</span>
+                        <h3 class="pub-title">Integer Programming</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue">Chapter 32 in <em>Handbook of Algorithms and Theory of Computing</em>, edited by M.J. Atallah, CRC Press 1999, 32-1 to 32-45</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">63</span>
+                        <h3 class="pub-title">The search for optimal Lagrange multipliers</h3>
+                        <p class="pub-authors">V.Chandru and M.A. Trick</p>
+                        <p class="pub-venue"><em>Journal of the Indian Institute of Science</em>, 78, 131-151, April 1998</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">64</span>
+                        <h3 class="pub-title">On-Line Maintenance of Optimal Schedules</h3>
+                        <p class="pub-authors">A.Aman, A.Balakrishnan and V.Chandru</p>
+                        <p class="pub-venue"><em>Sadhana: The Journal of Engineering Sciences</em>, Indian Academy of Sciences, April 1997, pp.257-279</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02835778" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">65</span>
+                        <h3 class="pub-title">Tractable Theories for the Synthesis of Neural Networks</h3>
+                        <p class="pub-authors">V.Chandru, M. Vidyasagar and V. Vinay</p>
+                        <p class="pub-venue"><em>Interfaces of Computer Science and Operations Research</em>, edited by R.S. Barr, R.V. Helgason, and J.F. Kennington, Kluwer Press, 1997 pp. 97-123</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">66</span>
+                        <h3 class="pub-title">Combinatorial Optimization</h3>
+                        <p class="pub-authors">V. Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>Handbook of Computer Science and Engineering</em>, edited by A. Tucker, CRC Press 1997, pp. 316-354</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">67</span>
+                        <h3 class="pub-title">Combinatorial Optimization: An Integer Programming Perspective</h3>
+                        <p class="pub-authors">V.Chandru and M.R. Rao</p>
+                        <p class="pub-venue"><em>ACM Computing Surveys</em>, March 1996, pp 55-58</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1145/214419.214421" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">68</span>
+                        <h3 class="pub-title">Algorithms for the Design of Optimal Discrete Neural Networks</h3>
+                        <p class="pub-authors">V.Chandru, A.Dattasharma, S.S.Keerthi, N.K.Sancheti and V.Vinay</p>
+                        <p class="pub-venue"><em>Proceedings of the Sixth ACM/SIAM Symposium on Discrete Algorithms</em>, SIAM Press, January 1995</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">69</span>
+                        <h3 class="pub-title">Minimizing total completion time on batch processing machines</h3>
+                        <p class="pub-authors">V.Chandru, C-Y Lee and R.Uzsoy</p>
+                        <p class="pub-venue"><em>International Journal of Production Research</em>, No. 9, 1993, 2097-2121</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1080/00207549308956864" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">70</span>
+                        <h3 class="pub-title">Minimizing Total Completion Time on a Batch Processing Machine with Job Families</h3>
+                        <p class="pub-authors">V.Chandru, C-Y Lee and R. Uzsoy</p>
+                        <p class="pub-venue"><em>Operations Research Letters</em>, March 1993, 61-65</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/0167-6377(93)90006-M" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">71</span>
+                        <h3 class="pub-title">Dynamic Task Assignment in a Distributed Manufacturing System</h3>
+                        <p class="pub-authors">A.Aman, A.Balakrishnan and V.Chandru</p>
+                        <p class="pub-venue"><em>New Directions for Operations Research in Manufacturing</em>, editors: Fandel, T. Gulledge and A. Jones, Springer Verlag, 1992</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">72</span>
+                        <h3 class="pub-title">Exploring special structures using a variant of Karmarkar's algorithm</h3>
+                        <p class="pub-authors">V. Chandru and B.S. Kochar</p>
+                        <p class="pub-venue">Research Memorandum No. 86-10, Purdue University (1986)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">73</span>
+                        <h3 class="pub-title">A class of algorithms for linear programming</h3>
+                        <p class="pub-authors">V. Chandru and B.S. Kochar</p>
+                        <p class="pub-venue">Research Memorandum No. 85-14, Purdue University (1985)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">74</span>
+                        <h3 class="pub-title">On the Complexity of Recognizing a Class of Generalized Networks</h3>
+                        <p class="pub-authors">V. Chandru, C.R. Coullard and D.K. Wagner</p>
+                        <p class="pub-venue"><em>Operations Research Letters</em>, Vol. 4, No. 2, July 1985, pp 75-78</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/0167-6377(85)90055-4" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">75</span>
+                        <h3 class="pub-title">Inverse Optimization: An Application to the Capacitated Plant Location Problem</h3>
+                        <p class="pub-authors">V. Chandru, G. Bitran, D. Sempolinski and J.F. Shapiro</p>
+                        <p class="pub-venue"><em>Management Science</em>, Volume 27, Number 10, October 1981, pp. 1120-1141</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1287/mnsc.27.10.1120" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- COMPUTATIONAL LOGIC -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-brain"></i>
+                    <h2>Computational Logic</h2>
+                    <span class="pub-count">13 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">76</span>
+                        <h3 class="pub-title">Minimal Unsatisfiable Sets: Classification and Bounds</h3>
+                        <p class="pub-authors">Sudeshna Dasgupta, Vijay Chandru</p>
+                        <p class="pub-venue"><em>ASIAN 2004</em>: 330-342</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-3-540-30502-6_24" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">77</span>
+                        <h3 class="pub-title">Qualitative Theorem Proving in Linear Constraints</h3>
+                        <p class="pub-authors">Vijay Chandru, Jean-Louis Lassez</p>
+                        <p class="pub-venue"><em>Verification: Theory and Practice 2003</em>: 395-406</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-3-540-39910-0_18" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">78</span>
+                        <h3 class="pub-title">On Synthesis of Easily Testable (k, K) Circuits</h3>
+                        <p class="pub-authors">Srinath R. Naidu, Vijay Chandru</p>
+                        <p class="pub-venue"><em>IEEE Transactions on Computers</em> 52(11): 1490-1494 (2003)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1109/TC.2003.1244944" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">79</span>
+                        <h3 class="pub-title">Mathematical Programming Embeddings of Logic</h3>
+                        <p class="pub-authors">Vivek S. Borkar, Vijay Chandru, Sanjoy K. Mitter</p>
+                        <p class="pub-venue"><em>Journal of Automated Reasoning</em> 29(1): 91-106 (2002)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1023/A:1020521002926" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">80</span>
+                        <h3 class="pub-title">Optimization Methods for Logical Inference</h3>
+                        <p class="pub-authors">V.Chandru and J.N.Hooker</p>
+                        <p class="pub-venue">Wiley Interscience Series in Discrete Mathematics and Optimization, March 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://www.wiley.com/en-gb/Optimization+Methods+for+Logical+Inference-p-x000026317" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Wiley</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">81</span>
+                        <h3 class="pub-title">Negation as Failure as Resolution</h3>
+                        <p class="pub-authors">V.Chandru, S.Roy and R.Subrahmanyam</p>
+                        <p class="pub-venue"><em>Constraints</em>, 3, 315-329, 1998</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1023/A:1009762207490" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">82</span>
+                        <h3 class="pub-title">Partial Instantiation Methods for Inference in First-Order Logic</h3>
+                        <p class="pub-authors">John N. Hooker, G. Rago, V. Chandru, A. Shrivastava</p>
+                        <p class="pub-venue"><em>Journal of Automated Reasoning</em> 28(5): 371-396 (2002)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1023/A:1015761219373" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">83</span>
+                        <h3 class="pub-title">A Flat Concurrent Prolog Compiler for PARAM</h3>
+                        <p class="pub-authors">M.Gupta and V.Chandru</p>
+                        <p class="pub-venue"><em>Journal of the IETE</em>, July 1996, pp. 42-45</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">84</span>
+                        <h3 class="pub-title">Variable Elimination in Linear Constraints</h3>
+                        <p class="pub-authors">V.Chandru</p>
+                        <p class="pub-venue"><em>The Computer Journal</em> No. 5, August 1993, 463-472</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1093/comjnl/36.5.463" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">85</span>
+                        <h3 class="pub-title">Detecting Embedded Horn Structure in Propositional Logic</h3>
+                        <p class="pub-authors">V.Chandru and J.N.Hooker</p>
+                        <p class="pub-venue"><em>Information Processing Letters</em>, 42, May 1992, pp. 109-111</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/0020-0190(92)90126-R" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">86</span>
+                        <h3 class="pub-title">An Extended Class of Horn Clause Systems</h3>
+                        <p class="pub-authors">V.Chandru and J.N.Hooker</p>
+                        <p class="pub-venue"><em>Journal of the Association for Computing Machinery</em>, Vol 38, No. 1, January 1991, pp. 205-221</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1145/102782.102789" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">87</span>
+                        <h3 class="pub-title">On Renamable Horn and Generalized Horn Functions</h3>
+                        <p class="pub-authors">V.Chandru, C.R.Coullard, P.L.Hammer, M.A.Montanez and X.Sun</p>
+                        <p class="pub-venue"><em>Annals of Mathematics and Artificial Intelligence</em>, Vol I, pp. 33-47, 1990</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF01531069" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                    <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">88</span>
+                        <h3 class="pub-title">Logical Inference: A Mathematical Programming Perspective</h3>
+                        <p class="pub-authors">V.Chandru and J.N.Hooker</p>
+                        <p class="pub-venue"><em>Artificial Intelligence - Manufacturing Theory</em>, edited by S. Kumara, A. Soyster, and R.L. Kashyap, Institute of Industrial Engineers, 1989, pp.97-120</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+
+                    <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">89</span>
+                        <h3 class="pub-title">On Renamable Horn and Generalized Horn Functions</h3>
+                        <p class="pub-authors">V.Chandru, C.R.Coullard, P.L.Hammer, M.A.Montanez and X.Sun</p>
+                        <p class="pub-venue"><em>Annals of Mathematics and Artificial Intelligence</em>, Vol I, pp. 33-47, 1990</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF01531069" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                    <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">90</span>
+                        <h3 class="pub-title">Logical Inference: A Mathematical Programming Perspective</h3>
+                        <p class="pub-authors">V.Chandru and J.N.Hooker</p>
+                        <p class="pub-venue"><em>Artificial Intelligence - Manufacturing Theory</em>, edited by S. Kumara, A. Soyster, and R.L. Kashyap, Institute of Industrial Engineers, 1989, pp.97-120</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPUTATIONAL GEOMETRY -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-shapes"></i>
+                    <h2>Computational Geometry</h2>
+                    <span class="pub-count">10 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">91</span>
+                        <h3 class="pub-title">Short-Cuts on Star, Source and Planar Unfoldings</h3>
+                        <p class="pub-authors">Vijay Chandru, Ramesh Hariharan, Narasimha M. Krishnakumar</p>
+                        <p class="pub-venue"><em>FSTTCS 2004</em>, Springer Verlag LNCS 174-185</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-3-540-30538-5_15" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">92</span>
+                        <h3 class="pub-title">Art Gallery Theorems for Convex Nested Polygons</h3>
+                        <p class="pub-authors">J. Bhadury, V. Chandru, A. Maheshwari and R. Chandrasekaran</p>
+                        <p class="pub-venue"><em>INFORMS Journal on Computing</em>, Winter 1997, pp. 100-110</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1287/ijoc.9.1.100" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">93</span>
+                        <h3 class="pub-title">NC Algorithms for Minimum Link Path and Related Problems</h3>
+                        <p class="pub-authors">V. Chandru, S.K. Ghosh, A. Maheshwari, S. Saluja and V.T. Rajan</p>
+                        <p class="pub-venue"><em>Journal of Algorithms</em>, 19, 173-203, 1995</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1006/jagm.1995.1033" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">94</span>
+                        <h3 class="pub-title">Hulls and Efficient Sets for the Rectilinear Norm</h3>
+                        <p class="pub-authors">D. Chhajed and V. Chandru</p>
+                        <p class="pub-venue"><em>INFORMS Journal on Computing</em>, Vol 7, pp 78-83, 1995</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1287/ijoc.7.1.78" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">95</span>
+                        <h3 class="pub-title">Monotone Pieces of Chains</h3>
+                        <p class="pub-authors">V. Chandru, V.T. Rajan and R. Swaminathan</p>
+                        <p class="pub-venue"><em>ORSA Journal on Computing</em>, No. 4, Fall 1992, 439-446</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1287/ijoc.4.4.439" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">96</span>
+                        <h3 class="pub-title">Circular Hulls and Orbiforms of Simple Polygons</h3>
+                        <p class="pub-authors">V. Chandru and R. Venkataraman</p>
+                        <p class="pub-venue"><em>Proceedings of the Second ACM-SIAM Symposium on Discrete Algorithms</em>, pp.433-440, January 1991</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">97</span>
+                        <h3 class="pub-title">Improper Intersection of Algebraic Curves</h3>
+                        <p class="pub-authors">S.S. Abhyankar, S. Chandrasekhar and V. Chandru</p>
+                        <p class="pub-venue"><em>ACM Transactions on Graphics</em>, 9, 2, pages 147-159, April 1990</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1145/78956.78958" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">98</span>
+                        <h3 class="pub-title">Intersection of Algebraic Space Curves</h3>
+                        <p class="pub-authors">S.S. Abhyankar, S. Chandrasekhar and V. Chandru</p>
+                        <p class="pub-venue"><em>Discrete Applied Mathematics</em>, Vol. 31, pp. 81-96, 1991</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/0166-218X(91)90051-R" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">99</span>
+                        <h3 class="pub-title">Degree Complexity Bounds on the Intersection of Algebraic Curves</h3>
+                        <p class="pub-authors">S.S. Abhyankar, S. Chandrasekhar and V. Chandru</p>
+                        <p class="pub-venue"><em>Proceedings of the Fifth Annual Symposium on Computational Geometry</em>, ACM Press, June 1989, pp. 88-93</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1145/73833.73845" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">100</span>
+                        <h3 class="pub-title">Analytic Techniques for Geometric Intersection Problems</h3>
+                        <p class="pub-authors">V. Chandru and B.S. Kochar</p>
+                        <p class="pub-venue"><em>Geometric Modeling: Algorithms and New Trends</em>, edited by G. Farin, SIAM Press, 1987, pp. 305-318</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-book"></i> View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- GRAPHICS AND GEOMETRIC MODELING -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-cube"></i>
+                    <h2>Graphics &amp; Geometric Modeling</h2>
+                    <span class="pub-count">15 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">101</span>
+                        <h3 class="pub-title">Volume Sculpting and Keyframe Animation System</h3>
+                        <p class="pub-authors">V. Chandru, N. Mahesh, M. Manivannan, Swami Manohar</p>
+                        <p class="pub-venue"><em>Computer Animation 2000</em>: 134-139</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1109/CA.2000.889052" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">102</span>
+                        <h3 class="pub-title">Molecular Dynamics Visualization with XML and VRML</h3>
+                        <p class="pub-authors">B. Arun, V. Chandru, A. D. Ganguly, Swami Manohar</p>
+                        <p class="pub-venue"><em>Computer Graphics International 2000</em>: 335-342</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1109/CGI.2000.852340" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">103</span>
+                        <h3 class="pub-title">Minkowski Operators and Features of Voxel Models</h3>
+                        <p class="pub-authors">V. Chandru, M. Manivannan, and S. Manohar</p>
+                        <p class="pub-venue">DETC99/DAC-8629, ASME, September 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">104</span>
+                        <h3 class="pub-title">Wavelets for Volume Fusion</h3>
+                        <p class="pub-authors">M.R. Lakshmish, S. Manohar, and V. Chandru</p>
+                        <p class="pub-venue"><em>Proceedings of IFIP Conference on Visual Computing</em>, Goa, February 1999</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">105</span>
+                        <h3 class="pub-title">Parallel Algorithms for Volume Morphing</h3>
+                        <p class="pub-authors">M.R. Lakshmish, S. Manohar and V. Chandru</p>
+                        <p class="pub-venue"><em>Proceedings of Symposium on Advanced Computing</em>, Pune, India, December 1998</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">106</span>
+                        <h3 class="pub-title">Volume Modeling for Emerging Manufacturing Technologies</h3>
+                        <p class="pub-authors">V. Chandru and S. Manohar</p>
+                        <p class="pub-venue"><em>Sadhana, The Engineering Sciences Journal of the Indian Academy of Sciences</em>, April 1997, pp.199-216</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF02844009" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">107</span>
+                        <h3 class="pub-title">RaPID: Rapid Product Innovation and Development</h3>
+                        <p class="pub-authors">V. Chandru, B. Gurumoorthy and S. Manohar</p>
+                        <p class="pub-venue"><em>Proc. International Conference on Agile Manufacturing</em>, Tata-McGraw-Hill, New Delhi, Feb 1996, pp.10-21</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">108</span>
+                        <h3 class="pub-title">Voxel-Based Modeling and Volume Graphics for Rapid Prototyping</h3>
+                        <p class="pub-authors">V. Chandru, S. Manohar and C.E. Prakash</p>
+                        <p class="pub-venue"><em>IEEE Transactions on Computer Graphics and Applications</em>, pp.42-48, November 1995</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1109/38.469514" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">109</span>
+                        <h3 class="pub-title">G-WoRP: A Geometric Workbench for Rapid Prototyping</h3>
+                        <p class="pub-authors">V. Chandru and S. Manohar</p>
+                        <p class="pub-venue"><em>Proceedings of the ASME Winter Annual Meeting</em>, Chicago, USA, pp.569-574, November 1994</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">110</span>
+                        <h3 class="pub-title">Variable Radius Blending with Cyclides</h3>
+                        <p class="pub-authors">V. Chandru, D. Dutta and C.M. Hoffmann</p>
+                        <p class="pub-venue"><em>Geometric Modeling for Product Engineering</em>, edited by M.J. Wozny, J.V. Turner and K. Preiss, North Holland, pp. 39-57, 1989</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/B978-0-444-88025-4.50010-6" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">111</span>
+                        <h3 class="pub-title">The Geometry of Dupin Cyclides</h3>
+                        <p class="pub-authors">V. Chandru, D. Dutta and C.M. Hoffmann</p>
+                        <p class="pub-venue"><em>The Visual Computer</em>, Vol.5, pp. 277-290, 1989</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/BF01914786" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">112</span>
+                        <h3 class="pub-title">A Mathematical Approach to Automatic Design of Fixtures: Analysis and Synthesis</h3>
+                        <p class="pub-authors">Y.C. Chou, V. Chandru and M. Barash</p>
+                        <p class="pub-venue"><em>ASME: Journal of Engineering for Industry</em>, Vol. 111, pp.299-306, November 1989</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1115/1.3188739" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">113</span>
+                        <h3 class="pub-title">Automatic Design of a Deep-Drawn Circumscribing Preform</h3>
+                        <p class="pub-authors">G. Eshel, M. Barash and V. Chandru</p>
+                        <p class="pub-venue"><em>IEEE Transactions on Robotics and Automation</em>, April 1989 Vol.5, No.2, pp. 208-222</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1109/70.88050" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">114</span>
+                        <h3 class="pub-title">PERCE'S GRIPES: A Robot Grasp Planner</h3>
+                        <p class="pub-authors">V. Chandru, J.J. Klug and R. Venkatesan</p>
+                        <p class="pub-venue"><em>Robotics and Computer Integrated Manufacturing</em>, Vol.4, No.3/4, pp.369-377, 1988</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1016/0736-5845(88)90041-9" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">115</span>
+                        <h3 class="pub-title">AIFIX: An Expert System Approach to Fixture Design</h3>
+                        <p class="pub-authors">P. Ferreira, B.S. Kochar, V. Chandru and R. Liu</p>
+                        <p class="pub-venue"><em>ASME Winter Conference Proceedings</em> (bound volume), November 1985, pp. 73-84</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link-btn"><i class="fas fa-file-alt"></i> View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- DIGITAL HUMANITIES -->
+            <div class="pubs-category">
+                <div class="pubs-category-header">
+                    <i class="fas fa-landmark"></i>
+                    <h2>Digital Humanities</h2>
+                    <span class="pub-count">3 items</span>
+                </div>
+                <div class="pubs-list">
+                                        <div class="pub-item animate-in delay-1">
+                        <span class="pub-number">116</span>
+                        <h3 class="pub-title">Digitally Archiving the Heritage of Hampi</h3>
+                        <p class="pub-authors">Vijay Chandru, Namitha A Kumar, Vijayashree C S, Deepak K Rathod, Uma V Chandru</p>
+                        <p class="pub-venue">Chapter in <em>"Digital Hampi: Preserving Indian Cultural Heritage"</em>, Springer Verlag, 2017</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-981-10-5738-0_1" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://link.springer.com/chapter/10.1007/978-981-10-5738-0_1" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-2">
+                        <span class="pub-number">117</span>
+                        <h3 class="pub-title">Towards Tangible Virtuality: Accessing and Experiencing the Heritage of Hampi and Lepakshi Murals</h3>
+                        <p class="pub-authors">Uma V Chandru, Vijayashree C S, Namitha A Kumar, Deepak K Rathod, Vijay Chandru</p>
+                        <p class="pub-venue">Chapter in <em>"Digital Hampi: Preserving Indian Cultural Heritage"</em>, Springer Verlag, 2017</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="https://doi.org/10.1007/978-981-10-5738-0_2" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> DOI</a>
+                            <a href="https://link.springer.com/chapter/10.1007/978-981-10-5738-0_2" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Full Text</a>
+                        </div>
+                    </div>
+
+                                        <div class="pub-item animate-in delay-3">
+                        <span class="pub-number">118</span>
+                        <h3 class="pub-title">Interactive Ceiling Plans of Mural Paintings in Hampi and Lepakshi</h3>
+                        <p class="pub-authors">Uma V Chandru, Vijayashree C S, Deepak Rathod, Vishwanatha V, Pradeepa C, Vijay Chandru</p>
+                        <p class="pub-venue">Centre for Cultural Heritage and Tourism Studies, IIACD, Bangalore (<em>Proceedings CIDOC 2015</em>)</p>
+                        <div class="pub-separator"></div>
+                        <div class="pub-links">
+                            <a href="http://network.icom.museum/fileadmin/user_upload/minisites/cidoc/ConferencePapers/2015/Final_CIDOC_Paper_August_24_2015_Uma_Chandru__1_.pdf" class="pub-link-btn" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> PDF</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+                <!-- Footer -->
+        <footer class="footer-dense">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-logo">VC</span>
+                    <p>Vijay Chandru</p>
+                </div>
+                <div class="footer-links">
+                    <a href="personal.html">Personal</a>
+                    <a href="transformational.html">Transformational</a>
+                    <a href="publications.html">Publications</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Google Scholar"><i class="fab fa-google"></i></a>
+                    <a href="#" aria-label="News"><i class="fas fa-newspaper"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Professor Vijay Chandru. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
